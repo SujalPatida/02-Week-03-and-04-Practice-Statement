@@ -1,0 +1,142 @@
+import java.util.*;
+
+/**
+ * Risk Band Search Service
+ */
+class RiskBandSearch {
+
+    /* ================= LINEAR SEARCH (UNSORTED) ================= */
+
+    public static void linearSearch(int[] arr, int target) {
+        int comparisons = 0;
+        boolean found = false;
+
+        for (int i = 0; i < arr.length; i++) {
+            comparisons++;
+            if (arr[i] == target) {
+                System.out.println("\nLinear Search: Found at index " + i);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("\nLinear Search: Not Found");
+        }
+
+        System.out.println("Comparisons: " + comparisons);
+        System.out.println("Time Complexity: O(n)");
+    }
+
+    /* ================= BINARY SEARCH (INSERTION POINT) ================= */
+
+    public static int binarySearchInsert(int[] arr, int target) {
+        int low = 0, high = arr.length - 1;
+        int comparisons = 0;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            comparisons++;
+
+            if (arr[mid] == target) {
+                System.out.println("\nBinary Search: Exact match at index " + mid);
+                System.out.println("Comparisons: " + comparisons);
+                return mid;
+            } else if (arr[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        // insertion point = low
+        System.out.println("\nBinary Search: Not found");
+        System.out.println("Insertion point index: " + low);
+        System.out.println("Comparisons: " + comparisons);
+
+        return low;
+    }
+
+    /* ================= FLOOR & CEILING ================= */
+
+    public static void findFloorCeiling(int[] arr, int target) {
+
+        int low = 0, high = arr.length - 1;
+        int floor = -1, ceiling = -1;
+        int comparisons = 0;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            comparisons++;
+
+            if (arr[mid] == target) {
+                floor = ceiling = arr[mid];
+                break;
+            }
+
+            if (arr[mid] < target) {
+                floor = arr[mid];
+                low = mid + 1;
+            } else {
+                ceiling = arr[mid];
+                high = mid - 1;
+            }
+        }
+
+        System.out.println("\nFloor: " + (floor == -1 ? "None" : floor));
+        System.out.println("Ceiling: " + (ceiling == -1 ? "None" : ceiling));
+        System.out.println("Comparisons: " + comparisons);
+    }
+
+    /* ================= LOWER & UPPER BOUND ================= */
+
+    public static int lowerBound(int[] arr, int target) {
+        int low = 0, high = arr.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] < target) low = mid + 1;
+            else high = mid;
+        }
+        return low;
+    }
+
+    public static int upperBound(int[] arr, int target) {
+        int low = 0, high = arr.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] <= target) low = mid + 1;
+            else high = mid;
+        }
+        return low;
+    }
+}
+
+/**
+ * Main Application
+ */
+public class RiskBandSystem {
+
+    public static void main(String[] args) {
+
+        int[] unsorted = {50, 10, 100, 25};
+        int[] sorted = {10, 25, 50, 100};
+
+        int target = 30;
+
+        // Linear Search (unsorted)
+        RiskBandSearch.linearSearch(unsorted, target);
+
+        // Binary Search (sorted)
+        RiskBandSearch.binarySearchInsert(sorted, target);
+
+        // Floor & Ceiling
+        RiskBandSearch.findFloorCeiling(sorted, target);
+
+        // Lower & Upper Bound
+        int lb = RiskBandSearch.lowerBound(sorted, target);
+        int ub = RiskBandSearch.upperBound(sorted, target);
+
+        System.out.println("\nLower Bound Index: " + lb);
+        System.out.println("Upper Bound Index: " + ub);
+    }
+}
