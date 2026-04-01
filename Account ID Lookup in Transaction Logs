@@ -1,0 +1,123 @@
+import java.util.*;
+
+/**
+ * Transaction Log model
+ */
+class TransactionLog {
+    String accountId;
+
+    public TransactionLog(String accountId) {
+        this.accountId = accountId;
+    }
+
+    @Override
+    public String toString() {
+        return accountId;
+    }
+}
+
+/**
+ * Search Service
+ */
+class SearchService {
+
+    /* ================= LINEAR SEARCH ================= */
+
+    public static void linearSearch(List<TransactionLog> logs, String target) {
+
+        int first = -1, last = -1;
+        int comparisons = 0;
+
+        for (int i = 0; i < logs.size(); i++) {
+            comparisons++;
+
+            if (logs.get(i).accountId.equals(target)) {
+                if (first == -1) first = i;
+                last = i;
+            }
+        }
+
+        System.out.println("\nLinear Search:");
+        System.out.println("First occurrence: " + first);
+        System.out.println("Last occurrence: " + last);
+        System.out.println("Comparisons: " + comparisons);
+        System.out.println("Time Complexity: O(n)");
+    }
+
+    /* ================= BINARY SEARCH ================= */
+
+    public static void binarySearch(List<TransactionLog> logs, String target) {
+
+        int low = 0, high = logs.size() - 1;
+        int comparisons = 0;
+        int foundIndex = -1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            comparisons++;
+
+            int cmp = logs.get(mid).accountId.compareTo(target);
+
+            if (cmp == 0) {
+                foundIndex = mid;
+                break;
+            } else if (cmp < 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        int count = 0;
+
+        // Count duplicates (expand left & right)
+        if (foundIndex != -1) {
+            count = 1;
+
+            int left = foundIndex - 1;
+            while (left >= 0 && logs.get(left).accountId.equals(target)) {
+                count++;
+                left--;
+            }
+
+            int right = foundIndex + 1;
+            while (right < logs.size() && logs.get(right).accountId.equals(target)) {
+                count++;
+                right++;
+            }
+        }
+
+        System.out.println("\nBinary Search:");
+        System.out.println("Found index: " + foundIndex);
+        System.out.println("Occurrences: " + count);
+        System.out.println("Comparisons: " + comparisons);
+        System.out.println("Time Complexity: O(log n)");
+    }
+}
+
+/**
+ * Main Application
+ */
+public class TransactionSearchSystem {
+
+    public static void main(String[] args) {
+
+        List<TransactionLog> logs = Arrays.asList(
+                new TransactionLog("accB"),
+                new TransactionLog("accA"),
+                new TransactionLog("accB"),
+                new TransactionLog("accC")
+        );
+
+        // Linear Search (unsorted allowed)
+        SearchService.linearSearch(logs, "accB");
+
+        // Sort logs for Binary Search
+        logs.sort(Comparator.comparing(l -> l.accountId));
+
+        System.out.println("\nSorted Logs: " + logs);
+
+        // Binary Search
+        SearchService.binarySearch(logs, "accB");
+    }
+}
